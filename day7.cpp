@@ -35,7 +35,7 @@ void printvec(vector<int> vec){
     }
     std::cout<<"\n";
 }
-void printvecs(vector<string> vec){
+void printvec(vector<string> vec){
     for (int i=0;i<vec.size();i++){
         std::cout<<vec[i]<<" ";
     }
