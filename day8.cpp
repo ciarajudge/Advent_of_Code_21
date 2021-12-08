@@ -154,36 +154,24 @@ int guessdigit2(std::string instring, std::string outstring){
                 std::cout<<"somethings gone wrong\n";
         }
     }
-    string confirmedletters = "";
-//    We can find g now as it's in 8 and not the others
-    match[outlier(dictcopy[1]+dictcopy[4]+dictcopy[7], dictcopy[8])] = "g";
-    confirmedletters = confirmedletters+outlier(dictcopy[1]+dictcopy[4]+dictcopy[7], dictcopy[8]);
-//    Same with a
-    match[outlier(dictcopy[7], dictcopy[1])] = "a";
-    confirmedletters = confirmedletters+outlier(dictcopy[7], dictcopy[1]);
-//  We can also find 6, as the only member of 'sixes' that will not have all numbers in common with 1
+
+//  We can find 6, as the only member of 'sixes' that will not have all numbers in common with 1
     for (string member:sixes){
         string guess = outlier(member, dictcopy[1]);
         if (guess != "x"){
             dictcopy[6] = member;
             dict[member] = 6;
-            match[guess] = "c";
-            confirmedletters = confirmedletters+guess;
-            match[outlier(guess+outlier(dictcopy[7], dictcopy[1]), dictcopy[7])]="f";
-            confirmedletters = confirmedletters+outlier(guess+outlier(dictcopy[7], dictcopy[1]), dictcopy[7]);
             auto itr = std::find(sixes.begin(), sixes.end(), member);
             sixes.erase(itr);
             break;
         }
     }
-//    Now find 0 and 9
+//    Now find 0 and 9: 0 will have a letter that isn't in 4
     for (string member:sixes){
         string guess = outlier(member, dictcopy[4]);
         if (guess != "x"){
             dictcopy[0] = member;
             dict[member] = 0;
-            match[guess] = "d";
-            confirmedletters = confirmedletters+guess;
             auto itr = std::find(sixes.begin(), sixes.end(), member);
             sixes.erase(itr);
             break;
@@ -191,25 +179,22 @@ int guessdigit2(std::string instring, std::string outstring){
     }
     dictcopy[9] = sixes[0];
     dict[sixes[0]] = 9;
-    match[outlier(dictcopy[8], dictcopy[9])] = "e";
-    confirmedletters = confirmedletters+outlier(dictcopy[8], dictcopy[9]);
     
-    
+//    Now tackle the fives, number 5 is the only one that will have all the same letters as 6
     for (string member:fives){
         string guess = outlier(dictcopy[6], member);
         if (guess == "x"){
             dictcopy[5] = member;
             dict[member] = 5;
-            match[guess] = "b";
-            confirmedletters = confirmedletters+guess;
             auto itr = std::find(fives.begin(), fives.end(), member);
             fives.erase(itr);
             break;
         }
     }
     
+//    Now just figure out 2 and 3: 2 will have a letter that isn't in 9
     for (string member:fives){
-        string guess = outlier(dictcopy[9]+dictcopy[5], member);
+        string guess = outlier(dictcopy[9], member);
         if (guess != "x"){
             dictcopy[2] = member;
             dict[member] = 2;
@@ -222,6 +207,7 @@ int guessdigit2(std::string instring, std::string outstring){
     dict[fives[0]] = 3;
     
     
+//    Use the dictionary you have populated to find the encoded output
     int sum = 0;
     int mult = 1000;
     for (string word:outvec){
@@ -249,7 +235,7 @@ int main() {
         outputs.push_back(splitstring(line, " | ")[1]);
     }
 
-    
+//    Part 1
     int count = 0;
     for (string line: outputs){
         vector<string> guesses = guessdigit(line);
@@ -273,6 +259,7 @@ int main() {
     
     std::cout<<count<<"\n";
     
+//    Part 2
     int sum = 0;
     for (int i = 0; i<inputs.size(); i++){
         int out = guessdigit2(inputs[i], outputs[i]);
